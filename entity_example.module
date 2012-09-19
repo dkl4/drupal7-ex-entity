@@ -17,3 +17,82 @@
  * @todo: Add a single field
  */
 
+
+/**
+ * Implements hook_entity_info().
+ *
+ * This is the fundamental description of the entity.
+ *
+ * It provides a single entity with a single bundle and without revision
+ * support.
+ */
+function entity_example_entity_info() {
+  $info['entity_example_basic'] = array(
+    // A human readable label to identify our entity.
+    'label' => t('Example Basic Entity'),
+
+    // The controller for our Entity, extending the Drupal core controller.
+    // This class is defined below
+    'controller class' => 'EntityExampleBasicController',
+
+    // The table for this entity defined in hook_schema()
+    // This table is created in entity_example.install
+    'base table' => 'entity_example_basic',
+
+    // Returns the uri elements of an entity
+    // This very short function is defined below.
+    'uri callback' => 'entity_example_basic_uri',
+
+    // IF fieldable == FALSE, we can't attach fields.
+    // I wonder if this is "free" (and should always be TRUE) or is expensive in storage or performance
+    'fieldable' => TRUE,
+
+    // entity_keys tells the controller what database fields are used for key
+    // functions. It is not required if we don't have bundles or revisions.
+    // Here we do not support a revision, so that entity key (typically vid) is omitted.
+    //
+    // Note columns 'basic_id' and 'bundle_type' are defined in int .install file.
+    // 'basic_id' is the primary key of table 'entity_example_basic'.
+    // I wonder if 'entity keys' here means a compound key
+    'entity keys' => array(
+      'id'     => 'basic_id',   // The 'id' (basic_id here) is the unique id.
+      'bundle' => 'bundle_type' // Bundle will be determined by the 'bundle_type' field
+    ),
+    'bundle keys' => array(
+      'bundle' => 'bundle_type',
+    ),
+
+    // FALSE disables caching. Caching functionality is handled by Drupal core.
+    // Why not always TRUE?  Maybe FALSE for trouble-shooting caching issues.
+    'static cache' => TRUE,
+
+    // Bundles are ALTERNATIVE groups of fields or configuration
+    // associated with a base entity type.
+    'bundles' => array(
+      'first_example_bundle' => array(
+        'label' => 'First example bundle',
+        // 'admin' key is used by the Field UI to provide field and
+        // display UI pages.
+        'admin' => array(
+          // The path 'admin/structure/entity_example_basic/manage' is defined in our hook_menu below
+          'path'             => 'admin/structure/entity_example_basic/manage',
+          'access arguments' => array('administer entity_example_basic entities'),
+        ),
+      ),
+    ),
+    // View modes allow entities to be displayed differently based on context.
+    // As a demonstration we'll support "Tweaky", but we could have and support
+    // multiple display modes.
+    // This is handled in entity_example_basic_view($entity, $view_mode = 'tweaky') below
+    'view modes' => array(
+      'tweaky' => array(
+        'label'           => t('Tweaky'),
+        'custom settings' =>  FALSE,
+      ),
+    )
+  );
+
+  return $info;
+}
+
+

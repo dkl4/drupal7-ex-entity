@@ -156,7 +156,67 @@ function entity_example_menu() {
   return $items;
 }
 
+/**
+ * Basic information for the page.
+ */
+function entity_example_info_page() {
+  $content['preface'] = array(
+    '#type'   => 'item',
+    '#markup' => t('The entity example provides a simple example entity.')
+  );
+  if (user_access('administer entity_example_basic entities')) {
+    $content['preface']['#markup'] =  t('You can administer these and add fields and change the view !link.',
+      array('!link' => l(t('here'), 'admin/structure/entity_example_basic/manage'))
+    );
+  }
+  $content['table'] = entity_example_basic_list_entities();  // defined below
 
+  return $content;
+}
+
+
+/**
+ * Returns a render array with all entity_example_basic entities.
+ *
+ * In this basic example we know that there won't be many entities,
+ * so we'll just load them all for display. See pager_example.module
+ * to implement a pager. Most implementations would probably do this
+ * with the contrib Entity API module, or a view using views module,
+ * but we avoid using non-core features in the Examples project.
+ *
+ * @see pager_example.module
+ */
+function entity_example_basic_list_entities() {
+  $content = array();
+  // Load all of our entities.
+  $entities = entity_example_basic_load_multiple();
+  if (!empty($entities)) {
+    foreach ( $entities as $entity ) {
+      // Create tabular rows for our entities.
+      $rows[] = array(
+        'data' => array(
+          'id'               => $entity->basic_id,
+          'item_description' => l($entity->item_description, 'examples/entity_example/basic/' . $entity->basic_id),
+          'bundle'           => $entity->bundle_type,
+        ),
+      );
+    }
+    // Put our entities into a themed table. See theme_table() for details.
+    $content['entity_table'] = array(
+      '#theme'  => 'table',
+      '#rows'   => $rows,
+      '#header' => array(t('ID'), t('Item Description'), t('Bundle')),
+    );
+  }
+  else {
+    // There were no entities. Tell the user.
+    $content[] = array(
+      '#type'   => 'item',
+      '#markup' => t('No entity_example_basic entities currently exist.'),
+    );
+  }
+  return $content;
+}
 
 
 

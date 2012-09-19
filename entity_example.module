@@ -96,3 +96,68 @@ function entity_example_entity_info() {
 }
 
 
+/**
+ * Implements hook_menu().
+ */
+function entity_example_menu() {
+  $items['examples/entity_example'] = array(
+    'title'            => 'Entity Example',
+    'page callback'    => 'entity_example_info_page',     // Defined below
+    'access arguments' => array('view any entity_example_basic entity'),
+  );
+
+  // This provides a place for Field API to hang its own
+  // interface and has to be the same as what was defined
+  // in basic_entity_info() above.
+  $items['admin/structure/entity_example_basic/manage'] = array(
+    'title'            => 'Administer entity_example_basic entity type',
+    'page callback'    => 'entity_example_basic_admin_page',                 // Defined below
+    'access arguments' => array('administer entity_example_basic entities'),
+  );
+
+  // The page to view our entities - needs to follow what
+  // is defined in basic_uri and will use load_basic to retrieve
+  // the necessary entity info.
+  // Since using %entity_example_basic arg we do an automatic call to entity_example_basic_load
+  // and pass that as an arg to 'page callback' entity_example_basic_view
+  // ArgNums: 0          1           2        3
+  $items['examples/entity_example/basic/%entity_example_basic'] = array(
+    'title callback'   => 'entity_example_basic_title',                 // Defined below
+    'title arguments'  => array(3),    // %entity_example_basic
+    'page callback'    => 'entity_example_basic_view',                  // View is default local task below
+    'page arguments'   => array(3),    // %entity_example_basic
+    'access arguments' => array('view any entity_example_basic entity'),
+  );
+
+  // 'View' tab for an individual entity page.
+  $items['examples/entity_example/basic/%entity_example_basic/view'] = array(
+    'title'  => 'View',
+    'type'   => MENU_DEFAULT_LOCAL_TASK,   // Default local task for path examples/entity_example/basic/%entity_example_basic
+    'weight' => -10,
+  );
+
+  // 'Edit' tab for an individual entity page.
+  //  ArgNum  0          1          2           3
+  $items['examples/entity_example/basic/%entity_example_basic/edit'] = array(
+    'title'            => 'Edit',
+    'page callback'    => 'drupal_get_form',
+    'page arguments'   => array('entity_example_basic_form', 3),          // Defined below, 3 is URL arg number => passes loaded object
+    'access arguments' => array('edit any entity_example_basic entity'),
+    'type'             => MENU_LOCAL_TASK,
+  );
+
+  // Add example entities.
+  $items['examples/entity_example/basic/add'] = array(
+    'title'            => 'Add an Entity Example Basic Entity',
+    'page callback'    => 'entity_example_basic_add',                    // Defined below. No magic-arg-loaded-obj since we're adding new
+    'access arguments' => array('create entity_example_basic entities'),
+  );
+
+  return $items;
+}
+
+
+
+
+
+

@@ -9,6 +9,10 @@
 
 /**
  * Implements hook_schema().
+ * I found that I had to use the Devel module's "Reinstall modules" command to
+ * get this schema to show up as an actual table.  Initially installing a
+ * an in-development module did not cause the table to be created.
+ * See http://drupal.org/node/603936
  */
 function entity_example_schema() {
   $schema = array();

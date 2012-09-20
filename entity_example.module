@@ -97,6 +97,49 @@ function entity_example_entity_info() {
 
 
 /**
+ * Fetch a basic object.
+ *
+ * This function ends up being a shim between the menu system and
+ * entity_example_basic_load_multiple().
+ *
+ * This function gets its name from the menu system's wildcard
+ * naming conventions. For example, /path/%wildcard would end
+ * up calling wildcard_load(%wildcard value). In our case defining
+ * the path: examples/entity_example/basic/%entity_example_basic in
+ * hook_menu() tells Drupal to call entity_example_basic_load().
+ *
+ * @param $basic_id
+ *   Integer specifying the basic entity id.
+ * @param $reset
+ *   A boolean indicating that the internal cache should be reset.
+ * @return
+ *   A fully-loaded $basic object or FALSE if it cannot be loaded.
+ *
+ * @see entity_example_basic_load_multiple()
+ * @see entity_example_menu()
+ */
+// In other words, Drupal (from D5 or earlier) has a function naming convention
+// whereby object_LOAD is called when you have a positional URL parameter of
+// form /%object (note '%').  This provides the object_LOAD which then calls
+// the new (D7) function of form object_LODA_MULTIPLE
+function entity_example_basic_load($basic_id = NULL, $reset = FALSE) {
+  $basic_ids = (isset($basic_id) ? array($basic_id) : array());
+  $basic = entity_example_basic_load_multiple($basic_ids, $reset);
+  return $basic ? reset($basic) : FALSE;
+}
+
+/**
+ * Loads multiple basic entities.
+ *
+ * We only need to pass this request along to entity_load(), which
+ * will in turn call the load() method of our entity controller class.
+ */
+function entity_example_basic_load_multiple($basic_ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load('entity_example_basic', $basic_ids, $conditions, $reset);
+}
+
+
+/**
  * Implements hook_menu().
  */
 function entity_example_menu() {
@@ -189,7 +232,7 @@ function entity_example_info_page() {
 function entity_example_basic_list_entities() {
   $content = array();
   // Load all of our entities.
-  $entities = entity_example_basic_load_multiple();
+  $entities = entity_example_basic_load_multiple();      // Defined above
   if (!empty($entities)) {
     foreach ( $entities as $entity ) {
       // Create tabular rows for our entities.

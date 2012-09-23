@@ -219,6 +219,28 @@ function entity_example_info_page() {
 
 
 /**
+ * Provides a list of existing entities and the ability to add more. Tabs
+ * provide field and display management.
+ */
+function entity_example_basic_admin_page() {
+  $content = array();
+  $content[] = array(
+    '#type'   => 'item',
+    '#markup' => t('Administration page for Entity Example Basic Entities.')
+  );
+
+  $content[] = array(
+    '#type'   => 'item',
+    '#markup' => l(t('Add an entity_example_basic entity'), 'examples/entity_example/basic/add'),
+  );
+  // entity_example_basic_list_entities() defined below returns a 'theme array' with #theme => 'table'
+  $content['table'] = entity_example_basic_list_entities();
+
+  return $content;
+}
+
+
+/**
  * Returns a render array with all entity_example_basic entities.
  *
  * In this basic example we know that there won't be many entities,

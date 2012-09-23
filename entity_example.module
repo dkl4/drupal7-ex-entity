@@ -315,6 +315,42 @@ function entity_example_basic_form($form, &$form_state, $entity) {
 }
 
 
+/**
+ * Validation handler for entity_example_basic_add_form form.
+ * We pass things straight through to the Field API to handle validation
+ * of the attached fields.
+ */
+// I'm not sure what kind of validation we get from the Field API in this case.
+// Even without this validation handler we still must put in an entry (require)
+// Since the field is text, I don't see much validation either.
+function entity_example_basic_form_validate($form, &$form_state) {
+  field_attach_form_validate('entity_example_basic', $form_state['values']['basic_entity'], $form, $form_state);
+}
+
+
+/**
+ * Form submit handler: submits basic_add_form information
+ */
+function entity_example_basic_form_submit($form, &$form_state) {
+  // Does this next line return an object - from a form?? Apparently...
+  $entity = $form_state['values']['basic_entity'];
+  $entity->item_description = $form_state['values']['item_description'];
+  field_attach_submit('entity_example_basic', $entity, $form, $form_state);
+  // 'entity_example_basic_save() defined below
+  $entity = entity_example_basic_save($entity);
+  // Move from 'add' page to 'view' page for that new basic_id
+  $form_state['redirect'] = 'examples/entity_example/basic/' . $entity->basic_id;
+}
+
+
+/**
+ * We save the entity by calling the controller.
+ */
+// This will save a row to table entity_example_basic with columns
+//   basic_id (int)    bundle_type ('first_example_bundle')    item_description (text)     created (Unix ts int)
+function entity_example_basic_save(&$entity) {
+  return entity_get_controller('entity_example_basic')->save($entity);
+}
 
 
 /**

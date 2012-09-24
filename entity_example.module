@@ -394,6 +394,45 @@ function entity_example_basic_view($entity, $view_mode = 'tweaky') {
 
 
 /**
+ * Implements hook_field_extra_fields().
+ *
+ * This exposes the "extra fields" (usually properties that can be configured
+ * as if they were fields) of the entity as pseudo-fields
+ * so that they get handled by the Entity and Field core functionality.
+ * Node titles get treated in a similar manner.
+ */
+// This hook allows one to tweak field elements (forms or displays)
+// This way we can change the labels, descriptions and weights
+// In code below, note we modify one form element and two display elements
+// In view mode, I can modify weight to get things to move up and down, but
+// label and description don't seem to change any.
+function entity_example_field_extra_fields() {
+  $form_elements['item_description'] = array(
+    'label'       => t('Item Description of field'),
+    'description' => t('Item Description (an extra form field)'),
+    'weight'      => -5,
+  );
+  $display_elements['created'] = array(
+    'label'       => t('Creation date of field'),
+    'description' => t('Creation date (an extra display field)'),
+    'weight'      => 10,
+  );
+  $display_elements['item_description'] = array(
+    'label'       => t('Item Description of field'),
+    'description' => t('Just like title, but trying to point out that it is a separate property'),
+    'weight'      => 0,
+  );
+
+  // Since we have only one bundle type, we'll just provide the extra_fields
+  // for it here.
+  $extra_fields['entity_example_basic']['first_example_bundle']['form'] = $form_elements;
+  $extra_fields['entity_example_basic']['first_example_bundle']['display'] = $display_elements;
+
+  return $extra_fields;
+}
+
+
+/**
  * Provides a wrapper on the edit form to add a new entity.
  */
 function entity_example_basic_add() {

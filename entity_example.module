@@ -317,6 +317,15 @@ function entity_example_basic_list_entities() {
 
 
 /**
+ * Callback for a page title when this entity is displayed.
+ */
+// Note that these entities do NOT show up on Drupal's <front> page which by default is a list of nodes
+function entity_example_basic_title($entity) {
+  return t('Entity Example Basic (item_description=@item_description)', array('@item_description' => $entity->item_description));
+}
+
+
+/**
  * Menu callback to display an entity.
  *
  * As we load the entity for display, we're responsible for invoking a number

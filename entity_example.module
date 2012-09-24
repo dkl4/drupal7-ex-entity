@@ -140,6 +140,16 @@ function entity_example_basic_load_multiple($basic_ids = FALSE, $conditions = ar
 
 
 /**
+ * Implements the uri callback.
+ */
+function entity_example_basic_uri($basic) {
+  return array(
+    'path' => 'examples/entity_example/basic/' . $basic->basic_id,
+  );
+}
+
+
+/**
  * Implements hook_menu().
  */
 function entity_example_menu() {
@@ -215,6 +225,28 @@ function entity_example_info_page() {
   $content['table'] = entity_example_basic_list_entities();  // defined below
 
   return $content;
+}
+
+
+/**
+ * Implements hook_permission().
+ */
+function entity_example_permission() {
+  $permissions = array(
+    'administer entity_example_basic entities' =>  array(
+      'title' => t('Administer entity_example_basic entities'),
+    ),
+    'view any entity_example_basic entity' => array(
+      'title' => t('View any Entity Example Basic entity'),
+    ),
+    'edit any entity_example_basic entity' => array(
+      'title' => t('Edit any Entity Example Basic entity'),
+    ),
+    'create entity_example_basic entities' => array(
+      'title' => t('Create Entity Example Basic Entities'),
+    ),
+  );
+  return $permissions;
 }
 
 
